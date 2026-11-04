@@ -95,6 +95,10 @@ def estimate_transfer_credits(
 
     log_call("estimate_transfer_credits", "ok")
     return ok(
+        bottom_line=(
+            f"You need {credits_remaining} more credits to finish your degree — "
+            f"{applied + elective} of your {transferable} transferable credits apply to ASU."
+        ),
         summary=(
             f"Based on your {institution_data['label']} credits, you can transfer up to "
             f"{applied + elective} credits to ASU, with about {credits_remaining} credits "

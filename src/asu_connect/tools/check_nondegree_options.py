@@ -117,6 +117,10 @@ def check_nondegree_options(
     log_call("check_nondegree_options", "ok")
     best = output_courses[0]
     return ok(
+        bottom_line=(
+            f"You can start {best['title']} ({best['course_code']}) this {term} "
+            f"for ${best['total_cost_usd']:.0f} — no application required, {best['open_seats']} seats open."
+        ),
         summary=(
             f"Found {len(output_courses)} non-degree class(es) matching '{course_interest}' "
             f"for {term}. {best['title']} ({best['course_code']}) has {best['open_seats']} "

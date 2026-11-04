@@ -2,9 +2,10 @@
 Standard response envelope for all ASU Connect tools.
 
 Design frameworks applied here:
-  - Apple HIG tone  : plain English, active voice, ≤ 20-word disclaimer
-  - Netflix content : most important fact first, action-first next_steps
-  - Nielsen #9      : errors always include a suggestion — never a dead end
+  - BLUF             : bottom_line states the conclusion in one sentence before anything else
+  - Apple HIG tone   : plain English, active voice, ≤ 20-word disclaimer
+  - Netflix content  : most important fact first, action-first next_steps
+  - Nielsen #9       : errors always include a suggestion — never a dead end
 """
 from __future__ import annotations
 
@@ -13,7 +14,8 @@ from typing import Any, TypedDict
 
 class ToolResponse(TypedDict):
     """Successful tool response envelope."""
-    summary: str          # 1-2 sentence plain-English lead (Apple HIG)
+    bottom_line: str      # BLUF: one-sentence conclusion — the answer, up front
+    summary: str          # 1-2 sentence supporting context (Apple HIG)
     data: dict[str, Any]  # structured result — most important fact first (Netflix)
     source: str           # public URL of authoritative data source
     disclaimer: str       # ≤ 20 words, active voice (Apple HIG + PRD Accessibility)
@@ -32,9 +34,10 @@ ADVISOR_URL = "https://admission.asu.edu/contact"
 STANDARD_DISCLAIMER = "This is an estimate. Verify the details with an ASU advisor before making any decisions."
 
 
-def ok(summary: str, data: dict[str, Any], source: str, next_steps: list[str], data_version: str) -> ToolResponse:
-    """Build a successful response using the standard envelope."""
+def ok(bottom_line: str, summary: str, data: dict[str, Any], source: str, next_steps: list[str], data_version: str) -> ToolResponse:
+    """Build a successful response using the standard envelope (BLUF first)."""
     return ToolResponse(
+        bottom_line=bottom_line,
         summary=summary,
         data=data,
         source=source,

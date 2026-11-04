@@ -119,6 +119,10 @@ def find_programs(
     log_call("find_programs", "ok")
     best = output_programs[0]
     return ok(
+        bottom_line=(
+            f"Your best match is {best['name']} — {best['total_credits']} credits online "
+            f"at ${best['cost_per_credit_usd']}/credit (${best['estimated_total_cost_usd']:,} total)."
+        ),
         summary=(
             f"Found {len(output_programs)} ASU program(s) matching '{goal}'. "
             f"The closest match is {best['name']} ({best['degree_type']}, "

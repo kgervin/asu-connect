@@ -27,12 +27,16 @@ from asu_connect.middleware import MAX_FIELD_LENGTH
 def assert_response_envelope(resp: dict[str, Any]) -> None:
     """
     Response compliance checklist (from Sub-Task 1 design standards):
+      ✓ bottom_line present and a single sentence (BLUF)
       ✓ summary ≤ 2 sentences, present
       ✓ disclaimer ≤ 20 words
       ✓ next_steps uses action-first verbs
       ✓ source is a non-empty string (URL)
       ✓ data_version present
     """
+    assert "bottom_line" in resp, "Missing 'bottom_line' field (BLUF)"
+    assert len(resp["bottom_line"]) > 0, "'bottom_line' is empty"
+
     assert "summary" in resp, "Missing 'summary' field"
     assert len(resp["summary"]) > 0, "'summary' is empty"
     assert resp["summary"].count(".") <= 3, "'summary' should be ≤ 2 sentences"
