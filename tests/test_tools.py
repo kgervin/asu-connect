@@ -78,7 +78,7 @@ def within_one_second(fn, *args, **kwargs):
 class TestEstimateTransferCredits:
 
     def test_happy_path_community_college(self):
-        """Maya's scenario: 45 community-college credits."""
+        """Maya's scenario: 45 community-college credits — under the 64-credit cap."""
         resp = within_one_second(
             estimate_transfer_credits,
             institution_type="community_college",
@@ -88,12 +88,15 @@ class TestEstimateTransferCredits:
         assert_response_envelope(resp)
         data = resp["data"]
         assert data["credits_submitted"] == 45
-        assert data["applied_credits"] + data["elective_credits"] <= 45
+        assert data["credits_lost_to_cap"] == 0  # 45 < 64 cap, nothing lost
+        breakdown = data["estimated_breakdown"]
+        assert breakdown["direct_equivalency"] + breakdown["general_elective"] <= 45
         assert data["credits_remaining"] > 0
         assert data["credits_remaining"] < 120
+        assert data["individual_evaluation_required"] is True
 
     def test_happy_path_four_year_university(self):
-        """Transfer from a 4-year university with 90 credits."""
+        """Transfer from a 4-year university with 90 credits — no cap."""
         resp = within_one_second(
             estimate_transfer_credits,
             institution_type="four_year_university",
@@ -102,6 +105,7 @@ class TestEstimateTransferCredits:
         )
         assert_response_envelope(resp)
         assert resp["data"]["credits_submitted"] == 90
+        assert resp["data"]["credits_lost_to_cap"] == 0  # unlimited for 4-year
 
     def test_with_courses_list(self):
         """Passing an optional courses list should work."""
@@ -149,12 +153,40 @@ class TestEstimateTransferCredits:
         )
         assert_error_envelope(resp)
 
+    def test_community_college_cap_applied(self):
+        """Submitting 80 credits from a community college should cap at 64."""
+        resp = within_one_second(
+            estimate_transfer_credits,
+            institution_type="community_college",
+            credits_completed=80,
+            client_id="test-cap",
+        )
+        assert_response_envelope(resp)
+        assert resp["data"]["credits_accepted_under_cap"] == 64
+        assert resp["data"]["credits_lost_to_cap"] == 16
+        assert "64-credit" in " ".join(resp["data"]["flags"])
+
+    def test_below_grade_courses_flagged(self):
+        """Courses with grades below C- should be flagged in the response."""
+        resp = within_one_second(
+            estimate_transfer_credits,
+            institution_type="community_college",
+            credits_completed=12,
+            courses=[
+                {"code": "ENG 101", "title": "English Composition", "grade": "A"},
+                {"code": "MAT 095", "title": "Developmental Math", "grade": "D"},
+            ],
+            client_id="test-grade",
+        )
+        assert_response_envelope(resp)
+        assert "MAT 095" in resp["data"]["courses_below_grade"]
+
     def test_credits_remaining_never_negative(self):
         """credits_remaining should never go below zero."""
         resp = within_one_second(
             estimate_transfer_credits,
             institution_type="four_year_university",
-            credits_completed=200,  # more than a full degree
+            credits_completed=200,
             client_id="test-overflow",
         )
         assert_response_envelope(resp)

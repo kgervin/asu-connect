@@ -1,55 +1,100 @@
 {
-  "data_version": "1.0.0",
-  "source_url": "https://transfercredit.asu.edu/",
-  "note": "MOCK DATA — values are illustrative only and do not represent official ASU transfer credit decisions.",
+  "data_version": "1.1.0",
+  "source_url": "https://admission.asu.edu/apply/transfer/transferring-credits",
   "advisor_url": "https://admission.asu.edu/contact",
+  "transfer_guide_url": "https://transferguide.apps.asu.edu/",
+  "mypath2asu_url": "https://admission.asu.edu/apply/transfer/MyPath2ASU",
+  "note": "Rules derived from public ASU admission website. Individual course applicability is always determined by the college of your major after admission — this tool provides an estimate only.",
+  "eligibility_rules": {
+    "minimum_grade": "C-",
+    "accreditation_required": "regionally accredited institution",
+    "remedial_courses_transfer": false,
+    "repeated_courses": "Only the first attempt with a C- or better is used",
+    "pass_grade": "Transferable only if institution indicates P equals C- or better; not calculated into transfer GPA",
+    "older_coursework": "Evaluated case-by-case; fast-changing fields (e.g. technology) may have limitations",
+    "credit_by_exam_max": 60
+  },
   "institution_types": {
     "community_college": {
-      "label": "Community College",
-      "max_applied_credits": 64,
-      "max_total_transfer_credits": 90,
+      "label": "Community College (2-year)",
+      "max_lower_division_credits": 64,
+      "max_total_transfer_credits": 64,
+      "note": "Maximum 64 semester hours accepted as lower-division credit from regionally accredited community, junior, or two-year colleges.",
+      "individual_evaluation_required": true,
+      "evaluation_note": "Your college of major determines how transferred courses fulfill specific degree requirements. Work with an ASU academic advisor after admission.",
       "categories": {
-        "applied": {
-          "description": "Credits that count toward your specific degree requirements",
-          "typical_courses": ["English Composition", "College Algebra", "General Biology", "US History", "Introduction to Psychology"]
+        "direct_equivalency": {
+          "description": "Courses with a confirmed ASU equivalent via the Transfer Guide — counted toward specific degree requirements",
+          "how_to_check": "https://transferguide.apps.asu.edu/"
         },
-        "elective": {
-          "description": "Credits that count as general elective hours toward your degree",
-          "typical_courses": ["Speech Communication", "Art Appreciation", "Physical Education", "Introduction to Sociology"]
+        "general_elective": {
+          "description": "Courses that transfer as credit but without a specific ASU course equivalent — count toward total credit hours"
         },
         "not_transferable": {
-          "description": "Credits that do not transfer to ASU",
-          "typical_courses": ["Developmental Math", "Developmental English", "Remedial courses (course numbers below 100)"]
+          "description": "Courses that do not transfer to ASU",
+          "examples": [
+            "Remedial or developmental courses (typically numbered below 100)",
+            "Vocational certificate courses (ACE recommendations)",
+            "Courses with a grade below C-",
+            "Courses from non-regionally accredited institutions"
+          ]
+        },
+        "requires_evaluation": {
+          "description": "Courses that may transfer but need individual review by the college of your major",
+          "examples": [
+            "Courses in fast-changing fields (technology, science) earned more than 10 years ago",
+            "Courses with non-standard credit units (quarter hours require conversion)",
+            "Military/JST credits (reviewed per VA guidelines and Arizona statutes)",
+            "Upper-division courses from community colleges (evaluated individually)"
+          ]
         }
       },
       "estimation_rules": {
-        "applied_fraction": 0.55,
-        "elective_fraction": 0.30,
-        "not_transferable_fraction": 0.15
+        "note": "These fractions are rough statistical estimates only. Actual applicability varies by major and is determined by your college advisor.",
+        "direct_equivalency_fraction": 0.45,
+        "general_elective_fraction": 0.30,
+        "requires_evaluation_fraction": 0.15,
+        "not_transferable_fraction": 0.10
       }
     },
     "four_year_university": {
       "label": "Four-Year University",
-      "max_applied_credits": 90,
-      "max_total_transfer_credits": 90,
+      "max_lower_division_credits": null,
+      "max_total_transfer_credits": null,
+      "note": "Unlimited credit hours accepted from four-year regionally accredited institutions.",
+      "individual_evaluation_required": true,
+      "evaluation_note": "Your college of major determines how transferred courses fulfill specific degree requirements. Work with an ASU academic advisor after admission.",
       "categories": {
-        "applied": {
-          "description": "Credits that count toward your specific degree requirements",
-          "typical_courses": ["Core curriculum courses", "Major prerequisite courses"]
+        "direct_equivalency": {
+          "description": "Courses with a confirmed ASU equivalent via the Transfer Guide",
+          "how_to_check": "https://transferguide.apps.asu.edu/"
         },
-        "elective": {
-          "description": "Credits that count as general elective hours",
-          "typical_courses": ["Upper-division electives", "Minor courses"]
+        "general_elective": {
+          "description": "Courses that transfer as credit without a specific ASU equivalent"
         },
         "not_transferable": {
-          "description": "Credits that do not transfer to ASU",
-          "typical_courses": ["Developmental or remedial courses", "Institutional-specific requirements"]
+          "description": "Courses that do not transfer",
+          "examples": [
+            "Remedial or developmental courses",
+            "Courses with a grade below C-",
+            "Courses from non-regionally accredited institutions"
+          ]
+        },
+        "requires_evaluation": {
+          "description": "Courses needing individual review",
+          "examples": [
+            "Courses in fast-changing fields earned more than 10 years ago",
+            "Courses with non-standard credit units",
+            "Military/JST credits"
+          ]
         }
       },
       "estimation_rules": {
-        "applied_fraction": 0.65,
-        "elective_fraction": 0.25,
-        "not_transferable_fraction": 0.10
+        "note": "These fractions are rough statistical estimates only. Actual applicability varies by major.",
+        "direct_equivalency_fraction": 0.55,
+        "general_elective_fraction": 0.30,
+        "requires_evaluation_fraction": 0.10,
+        "not_transferable_fraction": 0.05
       }
     }
   },
