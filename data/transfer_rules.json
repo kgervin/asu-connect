@@ -1,0 +1,57 @@
+{
+  "data_version": "1.0.0",
+  "source_url": "https://transfercredit.asu.edu/",
+  "note": "MOCK DATA — values are illustrative only and do not represent official ASU transfer credit decisions.",
+  "advisor_url": "https://admission.asu.edu/contact",
+  "institution_types": {
+    "community_college": {
+      "label": "Community College",
+      "max_applied_credits": 64,
+      "max_total_transfer_credits": 90,
+      "categories": {
+        "applied": {
+          "description": "Credits that count toward your specific degree requirements",
+          "typical_courses": ["English Composition", "College Algebra", "General Biology", "US History", "Introduction to Psychology"]
+        },
+        "elective": {
+          "description": "Credits that count as general elective hours toward your degree",
+          "typical_courses": ["Speech Communication", "Art Appreciation", "Physical Education", "Introduction to Sociology"]
+        },
+        "not_transferable": {
+          "description": "Credits that do not transfer to ASU",
+          "typical_courses": ["Developmental Math", "Developmental English", "Remedial courses (course numbers below 100)"]
+        }
+      },
+      "estimation_rules": {
+        "applied_fraction": 0.55,
+        "elective_fraction": 0.30,
+        "not_transferable_fraction": 0.15
+      }
+    },
+    "four_year_university": {
+      "label": "Four-Year University",
+      "max_applied_credits": 90,
+      "max_total_transfer_credits": 90,
+      "categories": {
+        "applied": {
+          "description": "Credits that count toward your specific degree requirements",
+          "typical_courses": ["Core curriculum courses", "Major prerequisite courses"]
+        },
+        "elective": {
+          "description": "Credits that count as general elective hours",
+          "typical_courses": ["Upper-division electives", "Minor courses"]
+        },
+        "not_transferable": {
+          "description": "Credits that do not transfer to ASU",
+          "typical_courses": ["Developmental or remedial courses", "Institutional-specific requirements"]
+        }
+      },
+      "estimation_rules": {
+        "applied_fraction": 0.65,
+        "elective_fraction": 0.25,
+        "not_transferable_fraction": 0.10
+      }
+    }
+  },
+  "degree_total_credits": 120
+}

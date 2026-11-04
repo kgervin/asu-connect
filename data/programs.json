@@ -1,0 +1,72 @@
+{
+  "data_version": "1.0.0",
+  "source_url": "https://asuonline.asu.edu/online-degree-programs/",
+  "note": "MOCK DATA — values are illustrative only and do not represent official ASU figures.",
+  "programs": [
+    {
+      "id": "bse-construction-management",
+      "name": "Construction Management",
+      "degree_type": "Bachelor of Science in Engineering",
+      "total_credits": 120,
+      "typical_duration_years": 4,
+      "typical_duration_part_time_years": 6,
+      "cost_per_credit_usd": 594,
+      "modality": "online",
+      "schedule": ["part_time", "full_time"],
+      "tags": ["construction", "management", "engineering", "project management"],
+      "source_url": "https://asuonline.asu.edu/online-degree-programs/engineering/construction-management-bse/"
+    },
+    {
+      "id": "bs-organizational-leadership",
+      "name": "Organizational Leadership",
+      "degree_type": "Bachelor of Science",
+      "total_credits": 120,
+      "typical_duration_years": 4,
+      "typical_duration_part_time_years": 6,
+      "cost_per_credit_usd": 561,
+      "modality": "online",
+      "schedule": ["part_time", "full_time"],
+      "tags": ["leadership", "management", "business", "organizational"],
+      "source_url": "https://asuonline.asu.edu/online-degree-programs/global-management/organizational-leadership-bs/"
+    },
+    {
+      "id": "bs-business-data-analytics",
+      "name": "Business Data Analytics",
+      "degree_type": "Bachelor of Science",
+      "total_credits": 120,
+      "typical_duration_years": 4,
+      "typical_duration_part_time_years": 6,
+      "cost_per_credit_usd": 561,
+      "modality": "online",
+      "schedule": ["part_time", "full_time"],
+      "tags": ["data", "analytics", "business", "technology"],
+      "source_url": "https://asuonline.asu.edu/online-degree-programs/business/business-data-analytics-bs/"
+    },
+    {
+      "id": "bs-psychology",
+      "name": "Psychology",
+      "degree_type": "Bachelor of Science",
+      "total_credits": 120,
+      "typical_duration_years": 4,
+      "typical_duration_part_time_years": 6,
+      "cost_per_credit_usd": 561,
+      "modality": "online",
+      "schedule": ["part_time", "full_time"],
+      "tags": ["psychology", "behavioral science", "counseling"],
+      "source_url": "https://asuonline.asu.edu/online-degree-programs/liberal-arts/psychology-bs/"
+    },
+    {
+      "id": "ba-communication",
+      "name": "Communication",
+      "degree_type": "Bachelor of Arts",
+      "total_credits": 120,
+      "typical_duration_years": 4,
+      "typical_duration_part_time_years": 6,
+      "cost_per_credit_usd": 561,
+      "modality": "online",
+      "schedule": ["part_time", "full_time"],
+      "tags": ["communication", "media", "writing", "public relations"],
+      "source_url": "https://asuonline.asu.edu/online-degree-programs/liberal-arts/communication-ba/"
+    }
+  ]
+}

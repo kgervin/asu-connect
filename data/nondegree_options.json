@@ -1,0 +1,74 @@
+{
+  "data_version": "1.0.0",
+  "source_url": "https://nondegree.asu.edu/",
+  "note": "MOCK DATA — values are illustrative only and do not represent official ASU tuition or enrollment figures.",
+  "advisor_url": "https://nondegree.asu.edu/contact",
+  "courses": [
+    {
+      "course_code": "CM 101",
+      "title": "Introduction to Construction Management",
+      "description": "An overview of the construction industry, project lifecycle, and core management principles.",
+      "credits": 3,
+      "terms_offered": ["Spring 2027", "Fall 2027"],
+      "open_seats": 12,
+      "tuition_per_credit_usd": 594,
+      "fees": {
+        "technology_fee_usd": 35,
+        "student_services_fee_usd": 15
+      },
+      "tags": ["construction", "management", "engineering"],
+      "registration_steps": [
+        "Visit nondegree.asu.edu and click 'Enroll as a non-degree student'",
+        "Create or sign in to your My ASU account",
+        "Search for CM 101 in the course catalog",
+        "Add the course to your enrollment shopping cart",
+        "Submit payment — tuition is due at the time of registration"
+      ],
+      "source_url": "https://nondegree.asu.edu/courses/construction-management"
+    },
+    {
+      "course_code": "MGT 300",
+      "title": "Fundamentals of Management",
+      "description": "Core management theory covering planning, organizing, leading, and controlling in organizations.",
+      "credits": 3,
+      "terms_offered": ["Spring 2027", "Summer 2027", "Fall 2027"],
+      "open_seats": 8,
+      "tuition_per_credit_usd": 561,
+      "fees": {
+        "technology_fee_usd": 35,
+        "student_services_fee_usd": 15
+      },
+      "tags": ["management", "business", "leadership", "organizational"],
+      "registration_steps": [
+        "Visit nondegree.asu.edu and click 'Enroll as a non-degree student'",
+        "Create or sign in to your My ASU account",
+        "Search for MGT 300 in the course catalog",
+        "Add the course to your enrollment shopping cart",
+        "Submit payment — tuition is due at the time of registration"
+      ],
+      "source_url": "https://nondegree.asu.edu/courses/management"
+    },
+    {
+      "course_code": "DAT 210",
+      "title": "Introduction to Data Analytics",
+      "description": "Foundations of data analysis, spreadsheet tools, and basic statistical reasoning for business decisions.",
+      "credits": 3,
+      "terms_offered": ["Spring 2027", "Fall 2027"],
+      "open_seats": 15,
+      "tuition_per_credit_usd": 561,
+      "fees": {
+        "technology_fee_usd": 35,
+        "student_services_fee_usd": 15
+      },
+      "tags": ["data", "analytics", "business", "technology"],
+      "registration_steps": [
+        "Visit nondegree.asu.edu and click 'Enroll as a non-degree student'",
+        "Create or sign in to your My ASU account",
+        "Search for DAT 210 in the course catalog",
+        "Add the course to your enrollment shopping cart",
+        "Submit payment — tuition is due at the time of registration"
+      ],
+      "source_url": "https://nondegree.asu.edu/courses/data-analytics"
+    }
+  ]
+}
