@@ -30,7 +30,7 @@ from typing import Any
 
 from asu_connect.middleware import ValidationError, check_rate_limit, log_call, validate_input
 from asu_connect.response import ADVISOR_URL, clarify, err, ok
-from asu_connect.server import mcp
+from asu_connect.app import mcp
 
 _DATA_FILE = Path(__file__).parent.parent.parent.parent / "data" / "transfer_rules.json"
 

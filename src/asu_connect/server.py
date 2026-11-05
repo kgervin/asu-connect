@@ -11,25 +11,13 @@ from __future__ import annotations
 
 import sys
 
-from fastmcp import FastMCP
+# Import the shared mcp instance first — tool modules register on it
+from asu_connect.app import mcp  # noqa: F401
 
-# ── Server instance ────────────────────────────────────────────────────────────
-mcp = FastMCP(
-    name="asu-connect",
-    instructions=(
-        "ASU Connect gives you accurate, source-cited information about Arizona State University "
-        "programs, transfer credit estimates, and non-degree class options. "
-        "Use estimate_transfer_credits to evaluate transfer credits, "
-        "find_programs to search degree programs, and "
-        "check_nondegree_options to find individual classes a student can take now. "
-        "All figures are estimates from mock data — advise students to verify with an ASU advisor."
-    ),
-)
-
-# ── Register tools (importing the modules causes the @mcp.tool decorators to fire)
-from asu_connect.tools import estimate_transfer_credits  # noqa: E402, F401
-from asu_connect.tools import find_programs              # noqa: E402, F401
-from asu_connect.tools import check_nondegree_options    # noqa: E402, F401
+# Import tool modules so their @mcp.tool() decorators fire against the shared instance
+import asu_connect.tools.estimate_transfer_credits  # noqa: F401
+import asu_connect.tools.find_programs              # noqa: F401
+import asu_connect.tools.check_nondegree_options    # noqa: F401
 
 if __name__ == "__main__":
     print("ASU Connect MCP server starting…", file=sys.stderr)
