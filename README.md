@@ -57,7 +57,23 @@ MCP-capable agent to connect to.
 pytest tests/ -v
 ```
 
-All 28 tests should pass in under 1 second each.
+All 30 tests should pass in under 1 second each.
+
+---
+
+## Agent compatibility
+
+ASU Connect uses the **standard MCP protocol over stdio**. Any agent with an MCP client connects
+without changes to the server. The constraint is always on the agent side, not the server.
+
+| Agent | MCP support | How to connect |
+|---|---|---|
+| **IBM Bob** | ✅ Yes | `.bob/mcp.json` — see below |
+| **Claude Desktop** | ✅ Yes | `claude_desktop_config.json` — see below |
+| **Cursor** | ✅ Yes | `.cursor/mcp.json` — same config format as Bob |
+| **Zed** | ✅ Yes | Zed settings → Context Servers |
+| **ChatGPT** | ❌ No | ChatGPT uses OpenAI Actions, not MCP — incompatible |
+| **Gemini** | ❌ No | Gemini does not support MCP — incompatible |
 
 ---
 
@@ -69,7 +85,7 @@ Add the following to your Bob workspace `mcp.json` (`.bob/mcp.json` in the proje
 {
   "mcpServers": {
     "asu-connect": {
-      "command": "python3",
+      "command": "/absolute/path/to/asu-connect/.venv/bin/python3",
       "args": ["-m", "asu_connect.server"],
       "cwd": "/absolute/path/to/asu-connect",
       "env": {
@@ -91,11 +107,37 @@ Bob will call all three tools and return a combined plan with sources cited.
 
 ---
 
-## Connect to any other MCP-capable agent
+## Connect to Claude Desktop
 
-The server uses the standard MCP stdio transport — any agent that supports MCP works without
-changes. Point it at `python3 -m asu_connect.server` with the project root as the working
-directory.
+Add the `asu-connect` entry to `~/Library/Application Support/Claude/claude_desktop_config.json`
+(macOS) or `%APPDATA%\Claude\claude_desktop_config.json` (Windows):
+
+```json
+{
+  "mcpServers": {
+    "asu-connect": {
+      "command": "/absolute/path/to/asu-connect/.venv/bin/python3",
+      "args": ["-m", "asu_connect.server"],
+      "cwd": "/absolute/path/to/asu-connect",
+      "env": {
+        "PYTHONPATH": "/absolute/path/to/asu-connect/src"
+      }
+    }
+  }
+}
+```
+
+Restart Claude Desktop after saving. The three ASU Connect tools will appear in the tools panel.
+
+---
+
+## Why ChatGPT and Gemini can't connect
+
+ChatGPT uses **OpenAI Actions** (a REST/OpenAPI schema) and Gemini uses **Google Extensions** —
+both are proprietary tool protocols incompatible with MCP. To connect ASU Connect to those agents
+you would need to wrap the tools as an OpenAPI-spec HTTP server (for ChatGPT) or a Google
+Extension (for Gemini). That is a post-MVP consideration; the MCP connector model is the
+priority for this submission.
 
 ---
 
