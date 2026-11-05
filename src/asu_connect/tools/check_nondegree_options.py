@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from asu_connect.middleware import ValidationError, check_rate_limit, log_call, validate_input
-from asu_connect.response import err, ok
+from asu_connect.response import clarify, err, ok
 from asu_connect.server import mcp
 
 _DATA_FILE = Path(__file__).parent.parent.parent.parent / "data" / "nondegree_options.json"
@@ -46,6 +46,20 @@ def check_nondegree_options(
         A list of open classes matching the interest and term, with itemized tuition,
         available seats, total cost, and step-by-step registration instructions.
     """
+    # ── Personalisation: ask if course interest is too vague ─────────────────
+    if not course_interest or not course_interest.strip():
+        log_call("check_nondegree_options", "clarification_needed")
+        return clarify(
+            question="What subject are you interested in taking a class in?",
+            why="Knowing your subject area helps me find open classes with available seats and show you the exact cost.",
+            options=[
+                "Construction management",
+                "Business or management",
+                "Data or technology",
+                "Something else — describe it in a few words",
+            ],
+        )
+
     # ── Validate inputs ──────────────────────────────────────────────────────
     try:
         validate_input({"course_interest": course_interest, "term": term, "client_id": client_id})
@@ -79,19 +93,17 @@ def check_nondegree_options(
         matches.append(course)
 
     if not matches:
-        log_call("check_nondegree_options", "no_results")
-        return {
-            "summary": f"No open non-degree classes matched '{course_interest}' for {term}.",
-            "courses": [],
-            "message": "Try a different term or broader search terms.",
-            "source": catalog["source_url"],
-            "disclaimer": "This is an estimate. Verify the details with an ASU advisor before making any decisions.",
-            "next_steps": [
-                "Visit nondegree.asu.edu to browse all available non-degree courses.",
-                "Contact ASU non-degree enrollment at nondegree.asu.edu/contact.",
+        log_call("check_nondegree_options", "clarification_needed")
+        return clarify(
+            question=f"No open classes matched '{course_interest}' for {term}. Would a different term or subject work?",
+            why="Class availability and open seats change each term. Trying a different term or a broader subject may find options.",
+            options=[
+                "Try a different term — e.g. 'Fall 2027' or 'Summer 2027'",
+                "Try a broader subject — e.g. 'management' instead of a specific topic",
+                "Browse all non-degree courses at nondegree.asu.edu",
+                "Contact ASU non-degree enrollment at nondegree.asu.edu/contact",
             ],
-            "data_version": catalog["data_version"],
-        }
+        )
 
     # Build output records with itemized cost (most important facts first)
     output_courses = []

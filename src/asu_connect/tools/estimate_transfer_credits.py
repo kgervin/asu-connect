@@ -16,6 +16,10 @@ Key real-world constraints reflected here:
       2. general_elective    — transfers as credit, no specific ASU equivalent
       3. requires_evaluation — may transfer; needs advisor review
       4. not_transferable    — does not transfer
+
+Personalisation: if institution_type is blank or "unknown", the tool asks a
+clarifying question rather than guessing — the credit cap (64 vs. unlimited)
+changes significantly depending on institution type.
 """
 from __future__ import annotations
 
@@ -25,7 +29,7 @@ from pathlib import Path
 from typing import Any
 
 from asu_connect.middleware import ValidationError, check_rate_limit, log_call, validate_input
-from asu_connect.response import ADVISOR_URL, err, ok
+from asu_connect.response import ADVISOR_URL, clarify, err, ok
 from asu_connect.server import mcp
 
 _DATA_FILE = Path(__file__).parent.parent.parent.parent / "data" / "transfer_rules.json"
@@ -82,17 +86,23 @@ def estimate_transfer_credits(
         log_call("estimate_transfer_credits", "validation_error")
         return err(str(exc), "Check your input and try again.")
 
-    # ── Load data ────────────────────────────────────────────────────────────
+    # ── Personalisation: ask if institution type is missing or ambiguous ──────
     rules = _load_rules()
     institution_data = rules["institution_types"].get(institution_type)
 
     if institution_data is None:
-        log_call("estimate_transfer_credits", "not_found")
-        supported = ", ".join(rules["institution_types"].keys())
-        return err(
-            f"Institution type '{institution_type}' was not found in our records.",
-            f"Try one of: {supported}. Or contact an ASU advisor for a full evaluation.",
-            ADVISOR_URL,
+        log_call("estimate_transfer_credits", "clarification_needed")
+        return clarify(
+            question="What type of institution did you earn these credits from?",
+            why=(
+                "ASU's credit cap is very different depending on where your credits came from. "
+                "Community colleges are capped at 64 semester hours; four-year universities have no cap. "
+                "This changes how many of your credits ASU can accept."
+            ),
+            options=[
+                "community_college — 2-year college or junior college",
+                "four_year_university — 4-year college or university",
+            ],
         )
 
     # ── Apply credit cap (64 hrs for community college) ──────────────────────

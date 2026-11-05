@@ -56,6 +56,14 @@ def assert_response_envelope(resp: dict[str, Any]) -> None:
     assert "data_version" in resp, "Missing 'data_version' field"
 
 
+def assert_clarification_envelope(resp: dict[str, Any]) -> None:
+    """Clarification responses must include a question, why, and options."""
+    assert "clarification_needed" in resp, "Missing 'clarification_needed' field"
+    assert len(resp["clarification_needed"]) > 0, "'clarification_needed' is empty"
+    assert "why" in resp, "Missing 'why' field"
+    assert "options" in resp and len(resp["options"]) > 0, "'options' must be a non-empty list"
+
+
 def assert_error_envelope(resp: dict[str, Any]) -> None:
     """Error responses must include 'error', 'suggestion', and 'contact_url' — no dead ends."""
     assert "error" in resp, "Missing 'error' field"
@@ -121,16 +129,16 @@ class TestEstimateTransferCredits:
         )
         assert_response_envelope(resp)
 
-    def test_unknown_institution_returns_error(self):
-        """An unknown institution type should return a helpful error — never a guess."""
+    def test_unknown_institution_returns_clarification(self):
+        """An unknown institution type should ask a clarifying question, not error."""
         resp = within_one_second(
             estimate_transfer_credits,
             institution_type="vocational_school",
             credits_completed=30,
             client_id="test-unknown",
         )
-        assert_error_envelope(resp)
-        assert "vocational_school" in resp["error"]
+        assert_clarification_envelope(resp)
+        assert "community_college" in " ".join(resp["options"]).lower() or "four_year" in " ".join(resp["options"]).lower()
 
     def test_oversized_institution_type_rejected(self):
         """An oversized institution_type string should be rejected by middleware."""
@@ -211,19 +219,25 @@ class TestFindPrograms:
         names = [p["name"].lower() for p in programs]
         assert any("construction" in n for n in names)
 
-    def test_no_match_returns_helpful_message(self):
-        """A goal with no matches should return an empty list with a helpful message."""
+    def test_empty_goal_returns_clarification(self):
+        """An empty goal should ask the student what they want to study."""
+        resp = within_one_second(
+            find_programs,
+            goal="",
+            client_id="test-empty-goal",
+        )
+        assert_clarification_envelope(resp)
+
+    def test_no_match_returns_clarification(self):
+        """A goal with no matches should ask a clarifying question, not silently fail."""
         resp = within_one_second(
             find_programs,
             goal="underwater basket weaving",
             modality="online",
             client_id="test-nomatch",
         )
-        # No-match path returns a flat response with "programs" key (not wrapped in "data")
-        programs = resp.get("programs") if "programs" in resp else resp.get("data", {}).get("programs")
-        assert programs == [], f"Expected empty programs list, got: {programs}"
-        # Must not be an error envelope — student gets next steps, not a dead end
-        assert "next_steps" in resp or "message" in resp
+        assert_clarification_envelope(resp)
+        assert "underwater basket weaving" in resp["clarification_needed"]
 
     def test_oversized_goal_rejected(self):
         """An oversized goal string should be rejected."""
@@ -292,17 +306,26 @@ class TestCheckNondegreeOptions:
             assert "registration_steps" in course
             assert len(course["registration_steps"]) > 0
 
-    def test_no_match_returns_helpful_message(self):
-        """No match should return a helpful message, not an error."""
+    def test_empty_interest_returns_clarification(self):
+        """An empty course_interest should ask the student what they want to study."""
+        resp = within_one_second(
+            check_nondegree_options,
+            course_interest="",
+            term="Spring 2027",
+            client_id="test-empty-nondegree",
+        )
+        assert_clarification_envelope(resp)
+
+    def test_no_match_returns_clarification(self):
+        """No match should ask a clarifying question — not silently fail."""
         resp = within_one_second(
             check_nondegree_options,
             course_interest="underwater basket weaving",
             term="Spring 2027",
             client_id="test-nomatch-nondegree",
         )
-        assert "next_steps" in resp or "message" in resp
-        # Should not be a hard error
-        assert "contact_url" not in resp or resp.get("courses") is not None
+        assert_clarification_envelope(resp)
+        assert "underwater basket weaving" in resp["clarification_needed"]
 
     def test_oversized_input_rejected(self):
         """An oversized course_interest should be rejected."""
@@ -314,12 +337,12 @@ class TestCheckNondegreeOptions:
         )
         assert_error_envelope(resp)
 
-    def test_term_with_no_offerings_returns_no_results(self):
-        """A term with no courses should return an empty result, not an error."""
+    def test_term_with_no_offerings_returns_clarification(self):
+        """A term with no courses should return a clarifying question."""
         resp = within_one_second(
             check_nondegree_options,
             course_interest="management",
             term="Summer 2099",
             client_id="test-term-nondegree",
         )
-        assert "next_steps" in resp or "message" in resp
+        assert_clarification_envelope(resp)

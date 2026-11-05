@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from asu_connect.middleware import ValidationError, check_rate_limit, log_call, validate_input
-from asu_connect.response import err, ok
+from asu_connect.response import clarify, err, ok
 from asu_connect.server import mcp
 
 _DATA_FILE = Path(__file__).parent.parent.parent.parent / "data" / "programs.json"
@@ -49,6 +49,22 @@ def find_programs(
         A list of matching ASU programs with name, degree type, total credits,
         estimated duration, cost per credit, and a link to the program page.
     """
+    # ── Personalisation: ask if goal is too vague to match confidently ────────
+    if not goal or not goal.strip():
+        log_call("find_programs", "clarification_needed")
+        return clarify(
+            question="What would you like to study or do with your degree?",
+            why="A degree goal helps narrow down the right ASU program for you. Without it, I'd return every program we have.",
+            options=[
+                "Construction management",
+                "Business or organizational leadership",
+                "Data analytics or technology",
+                "Psychology or behavioral science",
+                "Communications or media",
+                "Something else — describe it in a few words",
+            ],
+        )
+
     # ── Validate inputs ──────────────────────────────────────────────────────
     try:
         validate_input({"goal": goal, "client_id": client_id})
@@ -86,19 +102,17 @@ def find_programs(
             break
 
     if not results:
-        log_call("find_programs", "no_results")
-        return {
-            "summary": "No programs matched your criteria.",
-            "programs": [],
-            "message": "Try broader search terms or remove the modality or schedule filter.",
-            "source": catalog["source_url"],
-            "disclaimer": "This is an estimate. Verify the details with an ASU advisor before making any decisions.",
-            "next_steps": [
-                "Visit asuonline.asu.edu to browse all available programs.",
-                "Contact an ASU advisor to discuss your goals and find the right program.",
+        log_call("find_programs", "clarification_needed")
+        return clarify(
+            question=f"No programs matched '{goal}'. Can you describe your goal differently?",
+            why="A broader or differently worded goal may match more programs. For example, 'construction' instead of 'civil construction'.",
+            options=[
+                "Try a broader term — e.g. 'management' instead of 'construction project management'",
+                "Remove the schedule or modality filter to see all programs",
+                "Browse all programs at asuonline.asu.edu",
+                "Contact an ASU advisor at admission.asu.edu/contact",
             ],
-            "data_version": catalog["data_version"],
-        }
+        )
 
     # Build output records (most important facts first — Netflix pattern)
     output_programs = []

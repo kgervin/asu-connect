@@ -14,13 +14,21 @@ from typing import Any, TypedDict
 
 class ToolResponse(TypedDict):
     """Successful tool response envelope."""
-    bottom_line: str      # BLUF: one-sentence conclusion — the answer, up front
-    summary: str          # 1-2 sentence supporting context (Apple HIG)
-    data: dict[str, Any]  # structured result — most important fact first (Netflix)
-    source: str           # public URL of authoritative data source
-    disclaimer: str       # ≤ 20 words, active voice (Apple HIG + PRD Accessibility)
-    next_steps: list[str] # action-first ordered list e.g. "Visit …", "Contact …" (Netflix)
-    data_version: str     # version string from the data file
+    bottom_line: str                        # BLUF: one-sentence conclusion — the answer, up front
+    summary: str                            # 1-2 sentence supporting context (Apple HIG)
+    data: dict[str, Any]                    # structured result — most important fact first (Netflix)
+    source: str                             # public URL of authoritative data source
+    disclaimer: str                         # ≤ 20 words, active voice (Apple HIG + PRD Accessibility)
+    next_steps: list[str]                   # action-first ordered list e.g. "Visit …", "Contact …" (Netflix)
+    data_version: str                       # version string from the data file
+    clarification_needed: str | None        # if set, a single question that would improve the answer
+
+
+class ClarificationResponse(TypedDict):
+    """Returned when key inputs are too ambiguous to give a confident answer (Nielsen #6)."""
+    clarification_needed: str   # the single most important question to ask the student
+    why: str                    # plain-English reason — what changes based on the answer
+    options: list[str]          # suggested answer choices the student can pick from
 
 
 class ErrorResponse(TypedDict):
@@ -34,7 +42,7 @@ ADVISOR_URL = "https://admission.asu.edu/contact"
 STANDARD_DISCLAIMER = "This is an estimate. Verify the details with an ASU advisor before making any decisions."
 
 
-def ok(bottom_line: str, summary: str, data: dict[str, Any], source: str, next_steps: list[str], data_version: str) -> ToolResponse:
+def ok(bottom_line: str, summary: str, data: dict[str, Any], source: str, next_steps: list[str], data_version: str, clarification_needed: str | None = None) -> ToolResponse:
     """Build a successful response using the standard envelope (BLUF first)."""
     return ToolResponse(
         bottom_line=bottom_line,
@@ -44,6 +52,16 @@ def ok(bottom_line: str, summary: str, data: dict[str, Any], source: str, next_s
         disclaimer=STANDARD_DISCLAIMER,
         next_steps=next_steps,
         data_version=data_version,
+        clarification_needed=clarification_needed,
+    )
+
+
+def clarify(question: str, why: str, options: list[str]) -> ClarificationResponse:
+    """Return a clarification request when the answer would materially differ based on missing info."""
+    return ClarificationResponse(
+        clarification_needed=question,
+        why=why,
+        options=options,
     )
 
 
