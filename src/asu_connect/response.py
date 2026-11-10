@@ -9,7 +9,7 @@ Design frameworks applied here:
 """
 from __future__ import annotations
 
-from typing import Any, TypedDict
+from typing import Any, NotRequired, TypedDict
 
 
 class ToolResponse(TypedDict):
@@ -29,6 +29,8 @@ class ClarificationResponse(TypedDict):
     clarification_needed: str   # the single most important question to ask the student
     why: str                    # plain-English reason — what changes based on the answer
     options: list[str]          # suggested answer choices the student can pick from
+    asu_rules: NotRequired[dict[str, Any]]  # ASU facts that apply even without the missing info
+    source: NotRequired[str]                # public URL for those ASU facts
 
 
 class ErrorResponse(TypedDict):
@@ -56,13 +58,28 @@ def ok(bottom_line: str, summary: str, data: dict[str, Any], source: str, next_s
     )
 
 
-def clarify(question: str, why: str, options: list[str]) -> ClarificationResponse:
-    """Return a clarification request when the answer would materially differ based on missing info."""
-    return ClarificationResponse(
+def clarify(
+    question: str,
+    why: str,
+    options: list[str],
+    asu_rules: dict[str, Any] | None = None,
+    source: str | None = None,
+) -> ClarificationResponse:
+    """Return a clarification request when the answer would materially differ based on missing info.
+
+    asu_rules carries ASU-side facts that are true regardless of the missing input
+    (e.g. a transfer cap), so the agent can share them while it asks.
+    """
+    resp = ClarificationResponse(
         clarification_needed=question,
         why=why,
         options=options,
     )
+    if asu_rules is not None:
+        resp["asu_rules"] = asu_rules
+    if source is not None:
+        resp["source"] = source
+    return resp
 
 
 def err(error: str, suggestion: str, contact_url: str = ADVISOR_URL) -> ErrorResponse:

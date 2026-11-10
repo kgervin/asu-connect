@@ -1,10 +1,10 @@
 {
-  "data_version": "1.1.0",
+  "data_version": "1.2.0",
   "source_url": "https://admission.asu.edu/apply/transfer/transferring-credits",
   "advisor_url": "https://admission.asu.edu/contact",
   "transfer_guide_url": "https://transferguide.apps.asu.edu/",
   "mypath2asu_url": "https://admission.asu.edu/apply/transfer/MyPath2ASU",
-  "note": "Rules derived from public ASU admission website. Individual course applicability is always determined by the college of your major after admission — this tool provides an estimate only.",
+  "note": "ASU-side rules only, derived from the public ASU admission website. This file holds no student data and no estimated percentages: course-level results come only from the courses a student provides.",
   "eligibility_rules": {
     "minimum_grade": "C-",
     "accreditation_required": "regionally accredited institution",
@@ -12,7 +12,40 @@
     "repeated_courses": "Only the first attempt with a C- or better is used",
     "pass_grade": "Transferable only if institution indicates P equals C- or better; not calculated into transfer GPA",
     "older_coursework": "Evaluated case-by-case; fast-changing fields (e.g. technology) may have limitations",
-    "credit_by_exam_max": 60
+    "credit_by_exam_max": 60,
+    "passing_grades": [
+      "A+",
+      "A",
+      "A-",
+      "B+",
+      "B",
+      "B-",
+      "C+",
+      "C",
+      "C-"
+    ],
+    "below_minimum_grades": [
+      "D+",
+      "D",
+      "D-",
+      "F"
+    ],
+    "not_completed_grades": [
+      "W",
+      "WF",
+      "WP",
+      "I",
+      "IP",
+      "NC",
+      "AU",
+      "NR"
+    ],
+    "pass_fail_grades": [
+      "P",
+      "S",
+      "CR"
+    ],
+    "remedial_course_number_below": 100
   },
   "institution_types": {
     "community_college": {
@@ -24,11 +57,11 @@
       "evaluation_note": "Your college of major determines how transferred courses fulfill specific degree requirements. Work with an ASU academic advisor after admission.",
       "categories": {
         "direct_equivalency": {
-          "description": "Courses with a confirmed ASU equivalent via the Transfer Guide — counted toward specific degree requirements",
+          "description": "Courses with a confirmed ASU equivalent via the Transfer Guide \u2014 counted toward specific degree requirements",
           "how_to_check": "https://transferguide.apps.asu.edu/"
         },
         "general_elective": {
-          "description": "Courses that transfer as credit but without a specific ASU course equivalent — count toward total credit hours"
+          "description": "Courses that transfer as credit but without a specific ASU course equivalent \u2014 count toward total credit hours"
         },
         "not_transferable": {
           "description": "Courses that do not transfer to ASU",
@@ -48,13 +81,6 @@
             "Upper-division courses from community colleges (evaluated individually)"
           ]
         }
-      },
-      "estimation_rules": {
-        "note": "These fractions are rough statistical estimates only. Actual applicability varies by major and is determined by your college advisor.",
-        "direct_equivalency_fraction": 0.45,
-        "general_elective_fraction": 0.30,
-        "requires_evaluation_fraction": 0.15,
-        "not_transferable_fraction": 0.10
       }
     },
     "four_year_university": {
@@ -88,13 +114,6 @@
             "Military/JST credits"
           ]
         }
-      },
-      "estimation_rules": {
-        "note": "These fractions are rough statistical estimates only. Actual applicability varies by major.",
-        "direct_equivalency_fraction": 0.55,
-        "general_elective_fraction": 0.30,
-        "requires_evaluation_fraction": 0.10,
-        "not_transferable_fraction": 0.05
       }
     }
   },

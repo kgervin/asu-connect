@@ -1,0 +1,20 @@
+{
+  "data_version": "0.1.0",
+  "status": "sample",
+  "status_note": "Sample ASU-side equivalency rows for the prototype. Not synced with the ASU Transfer Guide. Replace with a Transfer Guide sync before any real use.",
+  "source_url": "https://transferguide.apps.asu.edu/",
+  "institutions": [
+    {
+      "name": "Mesa Community College",
+      "aliases": ["mesa community college", "mesa cc", "mcc", "maricopa community colleges", "mcccd"],
+      "institution_type": "community_college",
+      "equivalencies": [
+        {"code": "ENG 101", "asu_equivalent": "ENG 101", "category": "direct_equivalency"},
+        {"code": "ENG 102", "asu_equivalent": "ENG 102", "category": "direct_equivalency"},
+        {"code": "MAT 151", "asu_equivalent": "MAT 117", "category": "direct_equivalency"},
+        {"code": "PSY 101", "asu_equivalent": "PSY 101", "category": "direct_equivalency"},
+        {"code": "CIS 105", "asu_equivalent": "CIS 105", "category": "direct_equivalency"}
+      ]
+    }
+  ]
+}

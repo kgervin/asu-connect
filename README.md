@@ -16,7 +16,7 @@ that a student's existing AI agent can call:
 
 | Tool | What it answers |
 |------|----------------|
-| `estimate_transfer_credits` | "How many of my community-college credits transfer to ASU?" |
+| `estimate_transfer_credits` | "How do the courses I've taken line up with ASU transfer rules?" (uses the student's own course list; asks for it if missing) |
 | `find_programs` | "Which online ASU degree programs match my goals?" |
 | `check_nondegree_options` | "What class can I take next term without applying, and what will it cost?" |
 
@@ -57,7 +57,7 @@ MCP-capable agent to connect to.
 pytest tests/ -v
 ```
 
-All 30 tests should pass in under 1 second each.
+All 40 tests should pass in under 1 second each.
 
 ---
 
@@ -103,7 +103,22 @@ Once connected, try the Maya demo question:
 > "I have 45 credits from a community college and work full time.
 > I want an online construction management degree. What's my fastest, cheapest path?"
 
-Bob will call all three tools and return a combined plan with sources cited.
+Bob will call all three tools. Because Maya has given only a credit total, `estimate_transfer_credits`
+says it can't break her credits down, shares ASU's 64-credit cap, and asks for her courses.
+Follow up with her course list, for example:
+
+> "Mesa Community College: ENG 101 English Composition I, 3 credits, A; ENG 102, 3 credits, B+;
+> MAT 151 College Algebra, 4 credits, C; CON 101 Construction Methods, 3 credits, B."
+
+The tool then checks each course against ASU rules and returns a per-course result with sources cited.
+
+### Where transfer data comes from
+
+| Data | Comes from |
+|------|-----------|
+| Courses, credits, grades | The student (transcript or course list). Never invented by the connector. |
+| Transfer cap, grade rules, remedial rule, degree total | `data/transfer_rules.json` (ASU public admission rules) |
+| Course equivalencies | `data/course_equivalencies.json` (sample rows; replace with an ASU Transfer Guide sync) |
 
 ---
 
@@ -155,7 +170,8 @@ asu-connect/
 │       └── check_nondegree_options.py
 ├── data/
 │   ├── programs.json          # Mock ASU degree programs (versioned)
-│   ├── transfer_rules.json    # Mock transfer credit rules (versioned)
+│   ├── transfer_rules.json    # ASU transfer rules: cap, grades, remedial (versioned)
+│   ├── course_equivalencies.json # Sample ASU course equivalencies (versioned)
 │   └── nondegree_options.json # Mock non-degree courses (versioned)
 ├── tests/
 │   ├── test_middleware.py
