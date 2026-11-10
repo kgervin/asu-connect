@@ -3,9 +3,9 @@
 An MCP server that lets any AI agent answer trusted questions about Arizona State University
 programs, transfer credit, and non-degree classes — using governed, source-cited, mock data.
 
-> **Bobathon entry** · IBM Bobathon North America · WOW track · Dec 2, 2026  
-> **Primary dev tool:** IBM Bob  
-> **Data:** Public/mock only — no internal EdPlus data or real student records.
+> **EdPlus at Arizona State University** · Enrollment tools · Prototype  
+> **Users:** Enrollment and success coaches first, then prospective and transfer students  
+> **Data:** Public/mock only until governance approval. Student course history comes only from the student.
 
 ---
 
@@ -68,18 +68,17 @@ without changes to the server. The constraint is always on the agent side, not t
 
 | Agent | MCP support | How to connect |
 |---|---|---|
-| **IBM Bob** | ✅ Yes | `.bob/mcp.json` — see below |
 | **Claude Desktop** | ✅ Yes | `claude_desktop_config.json` — see below |
-| **Cursor** | ✅ Yes | `.cursor/mcp.json` — same config format as Bob |
+| **Cursor** | ✅ Yes | `.cursor/mcp.json` — see below |
 | **Zed** | ✅ Yes | Zed settings → Context Servers |
 | **ChatGPT** | ❌ No | ChatGPT uses OpenAI Actions, not MCP — incompatible |
 | **Gemini** | ❌ No | Gemini does not support MCP — incompatible |
 
 ---
 
-## Connect to IBM Bob
+## Connect to Cursor (or another workspace MCP client)
 
-Add the following to your Bob workspace `mcp.json` (`.bob/mcp.json` in the project root):
+Add the following to `.cursor/mcp.json` in the project root (other workspace clients use the same format):
 
 ```json
 {
@@ -98,12 +97,14 @@ Add the following to your Bob workspace `mcp.json` (`.bob/mcp.json` in the proje
 
 Replace `/absolute/path/to/asu-connect` with the actual path on your machine.
 
-Once connected, try the Maya demo question:
+## Try the core scenario
+
+Once an agent is connected, ask the Maya question:
 
 > "I have 45 credits from a community college and work full time.
 > I want an online construction management degree. What's my fastest, cheapest path?"
 
-Bob will call all three tools. Because Maya has given only a credit total, `estimate_transfer_credits`
+The agent will call all three tools. Because Maya has given only a credit total, `estimate_transfer_credits`
 says it can't break her credits down, shares ASU's 64-credit cap, and asks for her courses.
 Follow up with her course list, for example:
 
